@@ -26,8 +26,14 @@ public class CrudController {
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping()
-    public List<UsuariosResponseDTO> getAll() {
-        List<UsuariosResponseDTO> usuariosList = repository.findAll().stream().map(UsuariosResponseDTO::new).toList();
-        return usuariosList;
+    public List<UsuariosResponseDTO> getAll(@RequestParam(required = false) String name) {
+        if (name != null) {
+            // Filtra os usuários cujo nome contenha a substring especificada
+            return repository.findByNameContainingIgnoreCase(name).stream().map(UsuariosResponseDTO::new).toList();
+        } else {
+            // Retorna todos os usuários se nenhum filtro for fornecido
+            return repository.findAll().stream().map(UsuariosResponseDTO::new).toList();
+        }
     }
 }
+
